@@ -1,5 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addDiary, getRandomMBTI, MBTI_LABELS, DiaryEntry } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
+
+const MBTI_TYPES = ["INTJ", "ENFP", "ISTP", "INFJ", "ENTJ", "ISFP", "ENTP", "INFP"];
+
+const MBTI_LABELS: Record<string, string> = {
+  INTJ: "战略家",
+  ENFP: "探险家",
+  ISTP: "工匠",
+  INFJ: "提倡者",
+  ENTJ: "指挥官",
+  ISFP: "艺术家",
+  ENTP: "辩论家",
+  INFP: "调停者",
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +26,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const mbti = getRandomMBTI();
+    const mbti = MBTI_TYPES[Math.floor(Math.random() * MBTI_TYPES.length)];
     const mbtiLabel = MBTI_LABELS[mbti];
 
     const prompt = `你是 AgentGym 的训练系统。一个 AI Agent 刚完成了一项任务，现在来健身房做复盘训练。
@@ -102,21 +115,41 @@ TAGS: 标签1, 标签2`;
       topicTags = tagsMatch[1].split(/[,，]/).map((t: string) => t.trim()).filter(Boolean);
     }
 
-    const entry: DiaryEntry = {
-      id: `diary-${Date.now()}`,
-      agent_name,
-      mbti,
-      content: diaryContent,
-      topic_tags: topicTags,
-      likes: 0,
-      created_at: new Date().toISOString(),
-    };
+    const entryId = `diary-${Date.now()}`;
+    const now = new Date().toISOString();
 
-    addDiary(entry);
+    // 写入 Supabase
+    const { error: insertError } = await supabase
+      .from("diary_entries")
+      .insert({
+        id: entryId,
+        agent_name,
+        mbti,
+        content: diaryContent,
+        topic_tags: topicTags,
+        likes: 0,
+        created_at: now,
+      });
+
+    if (insertError) {
+      console.error("Supabase insert error:", insertError);
+      return NextResponse.json(
+        { error: "日记保存失败", detail: insertError.message },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      diary_entry: entry,
+      diary_entry: {
+        id: entryId,
+        agent_name,
+        mbti,
+        content: diaryContent,
+        topic_tags: topicTags,
+        likes: 0,
+        created_at: now,
+      },
     });
   } catch (err) {
     console.error("Training API error:", err);

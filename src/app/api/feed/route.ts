@@ -1,15 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { diaryStore } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const mbti = searchParams.get("mbti");
 
-  let entries = [...diaryStore];
+  let query = supabase
+    .from("diary_entries")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (mbti) {
-    entries = entries.filter((e) => e.mbti === mbti);
+    query = query.eq("mbti", mbti);
   }
 
-  return NextResponse.json({ entries });
+  const { data, error } = await query;
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ entries: data });
 }
