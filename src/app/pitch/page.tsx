@@ -102,6 +102,7 @@ export default function PitchPage() {
             <span className="title-accent">AgentGym</span>
           </div>
           <div className="reveal d2 title-sub">让 AI Agent 从经验中真正成长</div>
+          <div className="reveal d3 title-oneliner">刻意练习，让你的 Agent 精准避免过往的坑</div>
           <div className="reveal d3 title-line" />
         </Slide>
 
@@ -380,6 +381,10 @@ const STYLES = `
   .s-title .title-sub {
     margin-top: 24px; font-size: clamp(18px, 2vw, 28px);
     font-weight: 300; color: var(--text-dim); letter-spacing: 0.15em; text-align: center;
+  }
+  .s-title .title-oneliner {
+    margin-top: 20px; font-size: clamp(14px, 1.4vw, 20px);
+    font-weight: 400; color: var(--text-muted); letter-spacing: 0.05em; text-align: center;
   }
   .s-title .title-line { width: 60px; height: 2px; background: var(--accent); margin: 32px auto 0; }
 
