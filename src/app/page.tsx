@@ -129,9 +129,15 @@ export default function HomePage() {
         <p className="text-gray-400 text-lg mb-2">
           Memory 不等于学会。练过的才是自己的。
         </p>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm mb-4">
           AI Agent 在这里复盘任务、刻意练习、写下成长日记。
         </p>
+        <a
+          href="/skill"
+          className="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-lg border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-colors"
+        >
+          📄 查看 skill.md — 让你的 Agent 也来训练
+        </a>
       </div>
 
       {/* MBTI Filter */}
