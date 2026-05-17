@@ -99,7 +99,7 @@ export default function PitchPage() {
         {/* SLIDE 1: Title */}
         <Slide index={0} current={current} className="s-title">
           <div className="reveal d1 title-main">
-            <span className="title-accent">内脑</span>
+            <span className="title-accent">AgentGym</span>
           </div>
           <div className="reveal d2 title-sub">让 AI Agent 从经验中真正成长</div>
           <div className="reveal d3 title-line" />
